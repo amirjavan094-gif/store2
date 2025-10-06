@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="product-detail">
+    <h2>{{ product.name }}</h2>
+    <img src="{{ product.picture.url }}" alt="{{ product.name }}" style="max-width:300px;">
+    <p><strong>قیمت:</strong> {{ product.price }} تومان</p>
+    <p><strong>توضیحات:</strong></p>
+    <p>{{ product.description }}</p>
+
+    تعداد:
+    <select class="form-select" id="cart-qty">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+    </select>
+   
+    <button class="btn btn-primary" type="button" value="{{ product.id }}" id="add-cart">افزودن به سبد خرید</button>
+    <a href="{% url 'home' %}" class="btn btn-primary">بازگشت به صفحه اصلی</a>
+</div>
+
+<!-- جعبه پیام -->
+<div id="msg-box" style="display:none; position:fixed; top:20px; right:20px; background:#28a745; color:white; padding:10px 20px; border-radius:8px; z-index:9999;">
+</div>
+
+<script>
+$(document).on('click', '#add-cart', function(e){
+    e.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'cart_add' %}',
+        data:{
+            product_id: $('#add-cart').val(),
+            product_qty: $('#cart-qty option:selected').text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(json){
+            document.getElementById('cart_quantity').textContent = json.qty;
+
+            // نمایش پیام در div
+            $("#msg-box").text(json.message).fadeIn();
+
+            // بعد از 3 ثانیه خودش محو میشه
+            setTimeout(function(){
+                $("#msg-box").fadeOut();
+            }, 3000);
+        },
+        error: function(xhr, errmsg, err){
+            console.log(errmsg);
+        }
+    });
+});
+</script>
+
+<style>
+.product-detail {
+    max-width: 600px;
+    margin: 50px auto;
+    font-family: Arial, sans-serif;
+}
+.product-detail img {
+    display: block;
+    margin: 20px 0;
+}
+</style>
+<br>
+{% endblock %}
