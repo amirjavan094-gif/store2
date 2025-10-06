@@ -86,13 +86,19 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-
+# Database configuration for Render
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:postgres@localhost:5432/mysite',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'store2db',
+        'USER': 'store2db_user',
+        'PASSWORD': 'VZIKIkzGBw3FEPKPvsrg9AixCzy5thwL',
+        'HOST': 'dpg-d3hohke3jp1c73fn8m20-a',
+        'PORT': '5432',
+    }
 }
+
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
