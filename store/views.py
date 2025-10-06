@@ -88,7 +88,7 @@ def contact(request):
 
 def signup(request):
     form = SignUpForms()
-    if request.method == "POST" :
+    if request.method == "POST" : 
         form = SignUpForms(request.POST)
         if form.is_valid():
           form.save()
@@ -100,7 +100,7 @@ def signup(request):
           if user:
              login(request, user)
              messages.success(request, "اکانت شما ساخته شد")
-             return redirect("update_info")
+             return redirect("home")
           else:
              messages.error(request, " ثبت‌ نام ناموفق بود")
              return render(request, 'signup.html', {'form': form})
