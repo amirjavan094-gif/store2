@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'store',
     'django.contrib.humanize',
     'cart',
-    'payment'
+    'payment',
+    'cloudinary',
+    'cloudinary_storage'
 ]
 
 MIDDLEWARE = [
@@ -162,3 +164,11 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# تنظیم متغیر محیطی Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# اگر بخوای از طریق Cloudinary URL وارد کنی
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', 'cloudinary://API_KEY:API_SECRET@CLOUD_NAME')
+
