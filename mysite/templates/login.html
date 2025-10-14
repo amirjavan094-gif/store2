@@ -6,15 +6,16 @@
     <h2>ورود به سایت</h2>
 
     <!-- نمایش پیام‌ها -->
-    {% if messages %}
-        <ul>
-        {% for message in messages %}
-            <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
-                {{ message }}
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+
+            {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mt-2" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
 
     <form method="POST">
         {% csrf_token %}
