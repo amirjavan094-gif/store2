@@ -24,6 +24,22 @@
     {% include 'navbar.html' %}
 
     <main class="container my-4">
+
+    <!-- نمایش پیام‌ها -->
+{% if messages %}
+  <div class="messages-container" style="width: 90%; max-width: 600px; margin: 20px auto;">
+    {% for message in messages %}
+      <div class="alert 
+                  {% if message.tags == 'error' %}alert-danger
+                  {% elif message.tags == 'success' %}alert-success
+                  {% else %}alert-info{% endif %}" 
+           role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
         {% block content %}
         {% endblock %}
     </main>

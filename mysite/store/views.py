@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import Products,Category,Profile
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
@@ -13,7 +13,7 @@ from django.contrib import admin
 
 def order_details(request,pk):
     if request.user.is_authenticated:
-        order = Order.objects.get(id=pk)
+        order = get_object_or_404(Order,id=pk)
         items = OrderItem.objects.filter(order=pk)
         context = {
             "order":order,
@@ -21,13 +21,13 @@ def order_details(request,pk):
         }
         return render(request,"orders_details.html",context)
     else:
-        messages.success(request,"دسترسی ب این صفحه امکان پذیر نمیباشد")
+        messages.error(request,"دسترسی ب این صفحه امکان پذیر نمیباشد")
         return redirect("home")
 
 def user_orders(request):
     if request.user.is_authenticated:
         delivered_orders = Order.objects.filter(user=request.user,status="Delivered")
-        other_orders = Order.objects.filter(user=request.user).exclude(status="Deliverd")
+        other_orders = Order.objects.filter(user=request.user).exclude(status="Delivered")
 
         context = {
           "delivered": delivered_orders,
@@ -36,7 +36,7 @@ def user_orders(request):
         }
         return render(request,'orders.html',context)
     else:
-        messages.success(request,"دسترسی ب این صفحه امکان پذیر نمیباشد")
+        messages.error(request,"دسترسی ب این صفحه امکان پذیر نمیباشد")
         return redirect("home")
     
 
@@ -68,7 +68,7 @@ def category_summary(request):
 
 
 def category_product(request,id):
-    category = Category.objects.get(id=id)
+    category = get_object_or_404(Category,id=id)
     products = category.products.all()
     return render(request, 'category_product.html', {'category': category, 'products': products})
 
@@ -115,7 +115,7 @@ def signup(request):
     
 def update_user(request):
     if request.user.is_authenticated:
-        current_user =User.objects.get(id=request.user.id)
+        current_user =get_object_or_404(User,id=request.user.id)
         user_form = UpdateUserForm(request.POST or None,instance=current_user)
         if user_form.is_valid():
            user_form.save()
@@ -129,7 +129,7 @@ def update_user(request):
     
 def update_info(request):
     if request.user.is_authenticated:
-        current_user = Profile.objects.get(user__id=request.user.id)
+        current_user = get_object_or_404(Profile,user__id=request.user.id)
         shipping_user, created = ShippingAddress.objects.get_or_create(user=request.user)
 
         if request.method == "POST":
@@ -164,15 +164,17 @@ def update_password(request):
                 login(request,current_user)
                 return  redirect('update_user')
             else:
-                for erorr in list(form.errors.values()):
-                    messages.error(request,erorr)
-                    return redirect("upsate_password")
-        
-        else:
+            
+                for error_list in form.errors.values():
+                    for error in error_list:
+                        messages.error(request, error)
+                return redirect("update_password")
+        else:  # برای GET request
             form = UpdatePasswordForm(current_user)
-            return render(request,'update_password.html',{'form':form})
+            return render(request, 'update_password.html', {'form': form})
+
     else:
-        messages.success(request,'اول باید لاگین بشوید')
+        messages.error(request,'اول باید لاگین بشوید')
         return redirect("home")
 
 
@@ -190,7 +192,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None :
             login(request,user)
-            current_user = Profile.objects.get(user__id=request.user.id)
+            current_user = get_object_or_404(Profile,user__id=request.user.id)
             saved_cart = current_user.old_cart
             if saved_cart:
                 converted_cart=json.loads(saved_cart)
@@ -210,18 +212,18 @@ def login_user(request):
 
 
 def product_details(request,pk):
-    product = Products.objects.get(id=pk)
+    product = get_object_or_404(Products,id=pk)
     return render(request, 'product_details.html', {'product': product})
 
 def category(request,cat):
     cat = cat.replace("-"," ")
     try :
        
-       category = Category.objects.get(name=cat)
+       category = get_object_or_404(Category,name=cat)
        products = Products.objects.filter(category=category)
        return render(request, 'category.html',{'products': products, 'category': category})
     except:
-       messages.success(request,("دسته بندی وجود ندارد"))
+       messages.error(request,("دسته بندی وجود ندارد"))
        return redirect("home")
 
 
