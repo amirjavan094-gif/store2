@@ -1,0 +1,15 @@
+# پوشه محیط مجازی
+venv/
+venv
+
+# فایل‌های pycache
+__pycache__/
+*.pyc
+*.pyo
+
+# دیتابیس SQLite
+*.sqlite3
+
+# فایل‌های static یا media (اختیاری)
+static/
+media/

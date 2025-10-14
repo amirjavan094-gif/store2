@@ -1,0 +1,69 @@
+<!-- navbar.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container px-lg-5">
+    <a class="navbar-brand" href="{% url 'home' %}">فروشگاه امیر</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+            aria-expanded="false" aria-label="تغییر ناوبری">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">پروفایل</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'update_user' %}">پروفایل کاربری</a></li>
+            <li><a class="dropdown-item" href="{% url 'update_info' %}">اطلاعات کاربری</a></li>
+            <li><a class="dropdown-item" href="{% url 'orders' %}">سفارشات</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">خارج شدن</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">ورود ادمین</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">وارد شدن</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">ثبت نام</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">ورود ادمین</a></li>
+
+        {% endif %}
+
+        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">صفحه اصلی</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">درباره ما</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">ارتباط با ما</a></li>
+
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">محصولات</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'category_summary' %}">دسته بندی ها</a></li>
+            {% for category in categories %}
+            <li><a class="dropdown-item" href="{% url 'category_product' category.id %}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <!-- لینک منو کنار محصولات -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'search' %}">جست و جو</a>
+        </li>
+
+      </ul>
+
+      <!-- سبد خرید -->
+      <a href="{% url 'cart_summary' %}" 
+         style="position:fixed; top:10px; left:10px; display:inline-flex; align-items:center; gap:8px;
+                padding:10px 18px; border:2px solid #333; border-radius:25px; text-decoration:none;
+                font-size:14px; font-weight:bold; color:#333; background:#fff; transition:all 0.3s ease; z-index:9999;"
+         onmouseover="this.style.background='#333'; this.style.color='#fff';"
+         onmouseout="this.style.background='#fff'; this.style.color='#333';">
+        🛒 سبد خرید
+        <span style="background:#333; color:#fff; padding:2px 8px; border-radius:12px; font-size:12px; margin-right:5px;" id="cart_quantity">
+          {{ cart|length }}
+        </span>
+      </a>
+
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% load humanize %}  {# برای استفاده از intcomma #}
+
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">جست و جوی محصولات</h1>
+            <p class="lead fw-normal text-white-50 mb-0">دنبال چی میگردی؟</p>
+        </div>
+    </div>
+</header>
+
+<br>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form action="{% url 'search' %}" method="POST">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-header">
+                        جست و جو
+                    </div>
+                    <div class="card-body">
+                        <input type="text" class="form-control" placeholder="اسم محصول را وارد کنید" name="searched">
+                        <br>
+                        <button type="submit" class="btn btn-primary w-100">جست و جو</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+      <div class="row gx-4 gx-lg-4 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 justify-content-center"></div>
+
+    {% if searched %}
+    <div class="row mt-5">
+        {% for item in searched %}
+        <div class="col-md-4 mb-4">
+            <div class="card product-card h-100">
+                <div class="image-wrapper">
+                    {% if item.picture %}
+                        <img src="{{ item.picture.url }}" class="card-img-top" alt="{{ item.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="{{ item.name }}">
+                    {% endif %}
+                </div>
+                <div class="card-body product-content">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">{{ item.description }}</p>
+                    <p class="product-price">تومان {{ item.price|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

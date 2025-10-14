@@ -1,0 +1,38 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- هدر دسته‌بندی -->
+<div class="bg-dark py-5">
+  <div class="container px-3 px-lg-4 my-4">
+    <div class="text-center text-white">
+      <h6 class="display-4 fw-bolder">دسته‌بندی محصولات</h6>
+    </div>
+  </div>
+</div>
+
+<!-- لیست دسته‌بندی‌ها -->
+<div class="container my-5">
+  <div class="row g-4">
+    {% for category in all_cat %}
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        {% if category.image %}
+        <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+        {% else %}
+        <img src="https://via.placeholder.com/400x200?text=No+Image" class="card-img-top" alt="{{ category.name }}">
+        {% endif %}
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ category.name }} ها</h5>
+          <p class="card-text">{{ category.description|default:"توضیحی برای این دسته‌بندی موجود نیست." }}</p>
+        </div>
+        <div class="card-footer text-center">
+          <a href="{% url 'category_product' category.id %}" class="btn btn-primary">مشاهده محصولات</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+

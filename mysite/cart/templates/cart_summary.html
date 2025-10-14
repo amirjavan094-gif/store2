@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<header class="py-1">
+    <div class="container px-lg-5">
+        <div class="p-2 p-lg-3 text-center" 
+             style="background-color:lab(6.41% 0.79 -15.83); border-radius:12px; color:white;">
+            <div class="m-4 m-lg-5">
+                <h1 class="fs-4" style="color:white;">سبد خرید شما</h1>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<section id="products" class="pt-4" style="min-height: 80vh;">
+    <div class="container px-lg-5">
+        {% if cart_products %}
+        <div class="row-centered">
+            {% for product in cart_products %}
+            <div>
+                <div class="product-card">
+                    <div class="image-wrapper">
+                        {% if product.picture %}
+                            <img src="{{ product.picture.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300" alt="{{ product.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="product-content">
+                        <h5>{{ product.name }}</h5>
+                        <p class="card-description">{{ product.description }}</p>
+                        <p class="product-price">تومان {{ product.price|intcomma }}</p>
+                        <p class="product-price">تعداد:
+                            
+                           تعداد:
+                        <select class="form-select" id= "select{{product.id}}" >
+                                  {% for key,value in quantities.items %}
+                           {% if key == product.id|slugify  %}
+                            <option value="{{ value }}" selected>{{ value }}</option>
+
+                              
+
+
+                           {% endif %}
+                        {% endfor %} 
+                        
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                        </select>
+ 
+                        <button type="button" data-index={{product.id}} 
+                        class="btn btn-primary update-cart">ویرایش</button>
+                             
+                        </p>
+                        <button type="button" data-index={{product.id}} 
+                        class="btn btn-danger delete-product"> حذف محصول</button>
+                        <a href="{% url 'product_details' product.id %}" class="btn-view">مشاهده محصول</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+          
+
+        </div>
+          <div class="cart-total text-center mt-4">
+              <h3>مجموع قیمت کل سفارشات:</h3>
+               <h3>تومان {{ total_price|intcomma }}</h3>
+                   </div>
+                <a href="{% url 'checkout' %}" class="btn btn-success">صورت حساب</a>
+
+        {% else %}
+        <div style="text-align: center; margin: 50px 0;">
+            <h3>هیچ محصولی در سبد خرید موجود نیست. &#128549;</h3>
+        </div>
+        {% endif %}
+    </div>
+    
+</section>
+<div id="msg-box" style="display:none; position:fixed; top:20px; right:20px; background:#28a745; color:white; padding:10px 20px; border-radius:8px; z-index:9999;">
+</div>
+
+
+<script>
+$(document).on('click', '.update-cart', function(e){
+    e.preventDefault();
+    var productid = $(this).data('index')
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'cart_update' %}',
+        data:{
+            product_id: productid,
+            product_qty :$('#select'+productid).val(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+
+        success: function(json){
+            //document.getElementById('cart_quantity').textContent =json.qty
+            $("#msg-box").text(json.message).fadeIn();
+            setTimeout(function(){
+                $("#msg-box").fadeOut();
+                location.reload(); // بعد از ناپدید شدن پیام، صفحه رفرش بشه
+            }, 2000);
+            
+        },
+
+        error: function(xhr, errmsg, err){
+            // می‌تونی خطای Ajax رو اینجا هندل کنی
+        }
+    })
+})
+
+$(document).on('click', '.delete-product', function(e){
+    e.preventDefault();
+     var productid = $(this).data('index');
+    $.ajax({
+        type: 'POST',
+        url: '{% url 'cart_delete' %}',
+        data:{
+            product_id: productid,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+
+        success: function(json){
+            //document.getElementById('cart_quantity').textContent =json.qty
+                  $("#msg-box").text(json.message).fadeIn();
+            setTimeout(function(){
+                $("#msg-box").fadeOut();
+                location.reload(); // بعد از ناپدید شدن پیام، صفحه رفرش بشه
+            }, 2000);
+            location.reload();
+        },
+
+        error: function(xhr, errmsg, err){
+            // می‌تونی خطای Ajax رو اینجا هندل کنی
+        }
+    })
+})
+</script>
+
+
+
+{% endblock %}
+
+{% block extra_css %}
+
+
+
+
+
+
+<style>
+ #products {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 80vh;
+}
+
+
+
+
+
+
+
+/* چینش کارت‌ها */
+.row-centered {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* استایل کارت محصول */
+.product-card {
+    width: 220px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: right;
+    font-family: 'Vazir', Tahoma, sans-serif;
+    background: #fff;
+    transition: transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+}
+
+/* عکس محصول */
+.image-wrapper {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* محتوای کارت */
+.product-content {
+    padding: 10px;
+}
+
+.product-content h5 {
+    font-size: 15px;
+    margin: 0 0 6px 0;
+    font-weight: bold;
+}
+
+.product-content p {
+    font-size: 13px;
+    margin: 3px 0;
+    color: #555;
+}
+
+.product-price {
+    font-size: 14px;
+    font-weight: bold;
+    color: #e91e63;
+    margin-top: 6px;
+}
+
+.card-description {
+    max-height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+/* دکمه مشاهده محصول */
+.btn-view {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    margin-top: 8px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.btn-view:hover {
+    background-color: #0056b3;
+}
+
+/* فاصله پایین صفحه */
+#products {
+    padding-bottom: 50px;
+}
+</style>
+{% endblock %}
