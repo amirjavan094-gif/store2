@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="bg-dark py-5">
+  <div class="container">
+    <div class="text-center text-white">
+      <h2 class="fw-bolder">محصولات دسته: {{ category.name }}</h2>
+      <p class="lead">لیست محصولات مربوط به این دسته‌بندی</p>
+    </div>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="row g-4">
+    {% for product in products %}
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        {% if product.picture %}
+        <img src="{{ product.picture.url }}" class="card-img-top" alt="{{ product.name }}">
+        {% else %}
+        <img src="https://via.placeholder.com/400x250?text=No+Image" class="card-img-top" alt="{{ product.name }}">
+        {% endif %}
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="product-desc">
+            {{ product.description|default:"توضیحی برای این محصول موجود نیست." }}
+          </p>
+          {% if product.price %}
+          <p class="fw-bold">{{ product.price|intcomma }} تومان</p>
+          {% endif %}
+          <p class="text-muted">موجودی: {{ product.exist }}</p>
+        </div>
+        <div class="card-footer text-center">
+          <a href="{% url 'product_details' product.id %}" class="btn btn-primary">جزئیات محصول</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center">هیچ محصولی در این دسته وجود ندارد.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+<style>
+.product-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;  /* تعداد خطوط */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+</style>

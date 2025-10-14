@@ -119,7 +119,7 @@ def update_user(request):
         user_form = UpdateUserForm(request.POST or None,instance=current_user)
         if user_form.is_valid():
            user_form.save()
-           messages.success(request,'پروفایل شما ویرایش شد')
+           messages.error(request,'پروفایل شما ویرایش شد')
            return redirect("home")
     
         return render(request, 'update_user.html',{'user_form':user_form})
@@ -147,7 +147,7 @@ def update_info(request):
 
         return render(request, "update_info.html", {"form": form, "shipping_form": shipping_form})
     else:
-        messages.success(request, 'ابتدا باید لاگین شوید')
+        messages.error(request, 'ابتدا باید لاگین شوید')
         return redirect("home")
 
 

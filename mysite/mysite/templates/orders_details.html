@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+<br><br>
+<div class="container">
+    <div class="row">
+       <center>
+         <div class="col-10">
+
+          <h3>جزئیات سفارش</h3>
+
+          <div class="card">
+  <div class="card-header">
+    سفارش {{order.id}} - {{order.amount_paid|intcomma}} تومان
+  </div>
+  <div class="card-body">
+    ب نام : {{order.full_name}}<br>
+    ایمیل:{{order.email}}<br>
+    ادرس:{{order.shipping_address}}<br>
+    تاریخ ثبت:{{order.date_ordered|date:"Y/m/d_H:i"}}<br>
+    اخرین ویرایش:{{order.last_update|date:"Y/m/d_H:i"}}<br>
+    وضعیت:{{order.get_status_display}}<br>
+    <hr>
+    کالا ها<br>
+    {% for item in items %}
+  {{item.product}} تعداد| {{item.quantity}} عدد| {{item.price|intcomma}}<br>
+
+    {% endfor %}
+  </div>
+</div>
+      
+<a href="{% url 'orders' %}" class="btn btn-primary">بازگشت ب سفارشات</a>
+
+         </div>
+       </center>
+  
+      
+    </div>
+  </div>
+
+
+
+<br><br>
+{% endblock %}
