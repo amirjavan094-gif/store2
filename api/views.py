@@ -25,6 +25,18 @@ def api_product(request,id):
         return Response(serialize.data,status=status.HTTP_200_OK)
 
 
+@api_view(["POST"])
+def api_add(request):
+    data = request.data
+        name= request.data.get("name")
+        if products.objects.filter(name=name).exists():
+                return Response({"message":"this product already exist"},status=status.HTTP_400_BAD_REQUEST)
+                
+        serialize = Products_serializer(data=data)
+        if serialize.is_valid():
+                serialize.save()
+                return Response (serialize.data,status=status.HTTP_201_CREATED)
+        return Response (serialize.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["PATCH"])
