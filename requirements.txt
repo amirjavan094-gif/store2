@@ -9,6 +9,8 @@ dj-database-url==3.0.1
 Django==5.2.6
 django-cloudinary-storage==0.3.0
 django-jalali==7.4.0
+django-restframework==0.0.1
+djangorestframework==3.16.1
 gunicorn==23.0.0
 h11==0.16.0
 idna==3.10
