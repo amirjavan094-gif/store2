@@ -27,6 +27,7 @@ def api_product(request,id):
 
 @api_view(["POST"])
 def api_add(request):
+ try:
     data = request.data
     name= request.data.get("name")
     if Products.objects.filter(name=name).exists():
@@ -37,6 +38,10 @@ def api_add(request):
        serializer.save()
        return Response (serializer.data,status=status.HTTP_201_CREATED)
     return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 
+ except Exception as e:
+        print("Exception:", e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["PATCH"])
