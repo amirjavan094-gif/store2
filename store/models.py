@@ -43,6 +43,7 @@ post_save.connect(createprofile,sender=User)
     
 
 class Products(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="products",null=True,blank=True)
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=500, default='', blank=True, null=True)
     price = models.DecimalField(default=0, decimal_places=0, max_digits=12)
@@ -53,4 +54,8 @@ class Products(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        constraints = [
 
+            models.UniqueConstraint(fields=['user','name'],name="unique_product_per_user")
+        ]
