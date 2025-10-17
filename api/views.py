@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view 
 from django.shortcuts import get_object_or_404
 from store.models import Products 
-from.serializers import Products_serializer
+from.serializers import ProductsSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -14,14 +14,14 @@ def api_products(request):
 
         if not products.exists():
             return Response({"message":"No products found"},status=status.HTTP_404_NOT_FOUND)
-        serializer = Products_serializer(products,many =True)
+        serializer = ProductsSerializer(products,many =True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def api_product(request,id):
         product = get_object_or_404(Products,id=id)
-        serializer = Products_serializer(product)
+        serializer = ProductsSerializer(product)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
@@ -32,7 +32,7 @@ def api_add(request):
     if Products.objects.filter(name=name).exists():
         return Response({"message":"this product already exist"},status=status.HTTP_400_BAD_REQUEST)
                 
-    serializer = Products_serializer(data=data)
+    serializer = ProductsSerializer(data=data)
     if serializer.is_valid():
        serializer.save()
        return Response (serializer.data,status=status.HTTP_201_CREATED)
@@ -42,7 +42,7 @@ def api_add(request):
 @api_view(["PATCH"])
 def api_update(request,id):
         product = get_object_or_404(Products,id=id)
-        serializer = Products_serializer(product,data = request.data ,partial =True) 
+        serializer = ProductsSerializer(product,data = request.data ,partial =True) 
         if serializer.is_valid():
                serializer.save()
                return Response(serializer.data,status=status.HTTP_200_OK)
