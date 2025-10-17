@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'payment',
     'cloudinary',
     'cloudinary_storage'
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
