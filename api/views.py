@@ -14,42 +14,41 @@ def api_products(request):
 
         if not products.exists():
             return Response({"message":"No products found"},status=status.HTTP_404_NOT_FOUND)
-        serialize = Products_serializer(products,many =True)
-        return Response(serialize.data,status=status.HTTP_200_OK)
+        serializer = Products_serializer(products,many =True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def api_product(request,id):
         product = get_object_or_404(Products,id=id)
-        serialize = Products_serializer(product)
-        return Response(serialize.data,status=status.HTTP_200_OK)
+        serializer = Products_serializer(product)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
 def api_add(request):
     data = request.data
-        name= request.data.get("name")
-        if products.objects.filter(name=name).exists():
+    name= request.data.get("name")
+        if Products.objects.filter(name=name).exists():
                 return Response({"message":"this product already exist"},status=status.HTTP_400_BAD_REQUEST)
                 
-        serialize = Products_serializer(data=data)
-        if serialize.is_valid():
-                serialize.save()
-                return Response (serialize.data,status=status.HTTP_201_CREATED)
-        return Response (serialize.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = Products_serializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response (serializer.data,status=status.HTTP_201_CREATED)
+        return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["PATCH"])
 def api_update(request,id):
         product = get_object_or_404(Products,id=id)
-        serialize = Products_serializer(product,data = request.data ,partial =True) 
-        if serialize.is_valid():
-               serialize.save()
-               return Response(serialize.data,status=status.HTTP_200_OK)
-        print(serialize.errors)
-        return Response (serialize.errors,status=status.HTTP_400_BAD_REQUEST)
+        serializer = Products_serializer(product,data = request.data ,partial =True) 
+        if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data,status=status.HTTP_200_OK)
+        print(serializer.errors)
+        return Response (serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
-
 
 
 @api_view(["DELETE"])
