@@ -29,14 +29,14 @@ def api_product(request,id):
 def api_add(request):
     data = request.data
     name= request.data.get("name")
-        if Products.objects.filter(name=name).exists():
-                return Response({"message":"this product already exist"},status=status.HTTP_400_BAD_REQUEST)
+    if Products.objects.filter(name=name).exists():
+        return Response({"message":"this product already exist"},status=status.HTTP_400_BAD_REQUEST)
                 
-        serializer = Products_serializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response (serializer.data,status=status.HTTP_201_CREATED)
-        return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer = Products_serializer(data=data)
+    if serializer.is_valid():
+       serializer.save()
+       return Response (serializer.data,status=status.HTTP_201_CREATED)
+    return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["PATCH"])
