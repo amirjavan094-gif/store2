@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'cloudinary',
-    'cloudinary_storage'
+    'cloudinary_storage',
     'rest_framework'
 ]
 
