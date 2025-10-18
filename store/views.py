@@ -27,7 +27,7 @@ def order_details(request,pk):
 def user_orders(request):
     if request.user.is_authenticated:
         delivered_orders = Order.objects.filter(user=request.user,status="Delivered")
-        other_orders = Order.objects.filter(user=request.user).exclude(status="Deliverd")
+        other_orders = Order.objects.filter(user=request.user).exclude(status="Delivered")
 
         context = {
           "delivered": delivered_orders,
