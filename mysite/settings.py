@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'cloudinary',
-    'cloudinary_storage'
+    'cloudinary_storage',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,20 @@ else:
             'PORT': os.environ.get('DB_PORT', '5432'),
         }
     }
+
+# ===========================
+# Django REST Framework
+# ===========================
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',  # پیش‌فرض: فقط GET برای همه
+    ],
+}
+
+
 
 # ===========================
 # Password validation
